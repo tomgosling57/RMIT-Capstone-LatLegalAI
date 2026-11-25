@@ -1,0 +1,112 @@
+# Frontend Service
+
+Streamlit frontend for the LatMatrix Legal Simplifier application.
+
+## Overview
+
+The frontend provides a user-friendly web interface for:
+- Uploading legal documents (PDF, DOCX, TXT, PNG, JPG)
+- Viewing document analysis results
+- Interacting with summarization and translation features
+- Managing document processing workflows
+
+## Technology Stack
+
+- **Framework**: Streamlit
+- **HTTP Client**: requests
+- **UI Components**: Streamlit native components with custom CSS
+- **Authentication**: Supabase for user authentication
+- **Containerization**: Docker with optimized builds
+
+## Project Structure
+
+```
+frontend/
+├── src/                    # Source code
+│   ├── ui.py              # Streamlit application entry point
+│   ├── config.py          # Configuration settings
+│   ├── theme.css          # Custom styling
+│   ├── components/        # Reusable UI components
+│   ├── pages/             # Page layouts
+│   ├── services/          # Backend service integrations
+│   ├── styles/            # CSS stylesheets
+│   └── utils/             # Utility functions
+├── Dockerfile             # Container definition
+├── requirements.txt       # Python dependencies
+└── README.md
+```
+
+## Features
+
+### Document Upload
+- Support for multiple file formats (PDF, DOCX, TXT, PNG, JPG)
+- File validation and size limits
+- Progress indicators during upload
+- Preview functionality for supported documents
+
+### Analysis Interface
+- Display of extracted legal obligations, permissions, and risks
+- Plain-English summaries of complex legal language
+- Interactive elements for exploring document content
+- Streaming response handling for real-time processing
+
+### Translation Options
+- Multi-language support for summaries
+- Language selection dropdown
+- Real-time translation preview
+
+### Authentication
+- User login using Google or Facebook
+- Secure session management
+- Protected routes for authenticated users
+
+## Running the Frontend
+
+### Using Docker (Recommended)
+```bash
+# From project root
+docker-compose up frontend
+```
+
+### Local Development
+```bash
+cd frontend
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+cd src
+streamlit run ui.py --server.port 8501 --server.address 0.0.0.0
+```
+
+## Configuration
+
+Environment variables can be set in `.env` file:
+- `PORT`: Frontend port (default: 8501)
+- `API_URL`: Backend API URL (default: http://localhost:8000)
+- `SUPABASE_URL`: Supabase project URL
+- `SUPABASE_KEY`: Supabase project secret key
+- `GOOGLE_CLIENT_ID`: Google OAuth client ID
+- `FACEBOOK_APP_ID`: Facebook OAuth app ID
+
+## User Workflow
+
+1. **Login**: Authenticate using Google or Facebook
+2. **Upload Document**: Select and upload a legal document
+3. **Processing**: Wait for backend analysis (progress shown)
+4. **Review Results**: View summary and extracted legal elements
+5. **Optional Translation**: Translate summary to preferred language
+6. **Export**: Save or export results as needed
+
+## Access
+
+- **Frontend UI**: http://localhost:8501
+- **Backend API**: http://localhost:8000 (for direct API access)
+- **Documentation**: http://localhost:8000/docs
+
+## Development Notes
+
+- The frontend communicates with the backend via REST API
+- All document processing happens in the backend service
+- The UI is designed for simplicity and ease of use
+- Responsive design works on desktop and tablet devices
+- Uses Supabase for authentication and user management

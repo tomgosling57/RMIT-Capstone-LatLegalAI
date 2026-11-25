@@ -1,0 +1,41 @@
+Mixed En Hi
+===========
+
+SERVICE AGREEMENT
+
+This Service Agreement (hereinafter referred to as the 'Agreement') is entered
+into on ____, by and between:
+
+FIRST PARTY: ABC Private Limited, a company incorporated under the Companies
+Act, having its registered office at New Delhi, India (hereinafter referred to
+as the 'Client').
+
+SECOND PARTY: XYZ Services Private Limited, having its registered office at
+Mumbai, India (hereinafter referred to as the 'Service Provider').
+
+NOW, THEREFORE, the parties agree as follows:
+
+1. SERVICES: The Service Provider shall provide business management consulting
+services to the Client.
+
+2. PAYMENT: The service fees shall be Rs. 5,00,000 per annum, payable quarterly.
+
+3. CONFIDENTIALITY: Both parties agree to maintain mutual confidentiality.
+
+यह एक सेवा समझौता है (Service Agreement). यह समझौता (Agreement) दिनांक ____ को
+पक्षकारों (Parties) के बीच संपन्न हुआ।
+
+प्रथम पक्ष: ABC कंपनी प्राइवेट लिमिटेड, जिसका पंजीकृत कार्यालय नई दिल्ली में
+स्थित है।
+
+द्वितीय पक्ष: XYZ सर्विसेज प्राइवेट लिमिटेड।
+
+दोनों पक्षकार इस समझौते की शर्तों से सहमत हैं।
+
+भुगतान (Payment) की शर्तें: सेवा शुल्क ५,००,००० रुपये प्रति वर्ष होगा।
+
+गोपनीयता (Confidentiality): दोनों पक्षकार आपसी गोपनीयता बनाए रखने के लिए सहमत
+हैं।
+
+विवाद समाधान (Dispute Resolution): किसी भी विवाद का समाधान मध्यस्थता
+(Arbitration) के माध्यम से किया जाएगा।

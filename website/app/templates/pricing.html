@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Pricing — LatLegal AI{% endblock %}
+
+{% block extra_head %}
+<style>
+  .pricing-header {
+    text-align: center;
+    padding: 60px 24px 40px;
+  }
+  .pricing-header h1 { font-size: 2.4rem; font-weight: 800; margin-bottom: 12px; }
+  .pricing-header h1 span { color: var(--gold); }
+  .pricing-header p { color: #aaa; font-size: 1.05rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="pricing-header">
+  <h1>Simple, <span>Transparent</span> Pricing</h1>
+  <p>Choose the plan that fits your needs. Upgrade or downgrade at any time.</p>
+</section>
+
+<div class="container">
+  {% include "_pricing_grid.html" %}
+</div>
+{% endblock %}

@@ -1,0 +1,56 @@
+# LatMatrix Backend – Python dependencies
+# Install with:  pip install -r requirements.txt
+
+# --- Core ---
+python-dotenv>=1.0
+# python-magic: File type detection via libmagic (system library)
+# Note: On Linux, libmagic1 must be installed (apt-get install libmagic1).
+#       On Windows, use python-magic-bin instead.
+python-magic>=0.4
+
+# --- Document processing ---
+pdfplumber>=0.10
+python-docx>=1.1
+
+# --- OCR for scanned documents (optional) ---
+pytesseract>=0.3
+pdf2image>=1.16
+pillow>=10.0  # Required by pdf2image
+opencv-python>=4.8
+reportlab>=3.6  # For generating test documents (scanned PDFs only)
+weasyprint>=68  # For generating digital PDFs with proper Unicode support
+
+# --- NLP ---
+spacy>=3.7
+# After install, download the model:
+#   python -m spacy download en_core_web_sm
+langdetect>=1.0  # Language detection for OCR documents
+
+# --- Web framework ---
+fastapi>=0.110
+uvicorn[standard]>=0.29
+python-multipart>=0.0.9    # required for FastAPI file uploads
+
+# --- Translation (optional but recommended) ---
+deep-translator>=1.11
+# Alternative: googletrans==4.0.0-rc1 (unofficial Google Translate API)
+# Alternative: deepl (official DeepL API)
+
+# --- LLM backends (install only what you need) ---
+openai>=1.30          # for OpenAI/GPT backend
+anthropic>=0.28       # for Anthropic/Claude backend
+# Note: Ollama uses HTTP requests, no extra package needed
+
+# --- ML / Metrics ---
+scikit-learn>=1.3
+jiwer>=3.0
+
+# --- Testing ---
+pytest>=7.4
+pytest-asyncio>=0.21
+httpx>=0.26
+
+# --- Development utilities ---
+black>=24.0  # code formatting
+flake8>=7.0  # linting
+mypy>=1.8    # type checking

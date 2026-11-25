@@ -1,0 +1,43 @@
+
+### **1. Global Design System (The "LatLegal AI" Theme)**
+* **Color Palette:** * **Background:** Deep Midnight Black/Navy (`#05070A`).
+    * **Primary Accent:** High-contrast Golden Yellow (`#FFD700`).
+    * **Secondary Accent:** Royal Blue (`#0033AA`).
+    * **Surface/Cards:** Slate Gray/Blue (`#2A2E3E`).
+* **Typography:** Modern Sans-serif (Inter or Roboto). Titles are Uppercase with generous tracking.
+* **UI Components:**
+    * **Navbar:** Dark background with a thin blue bottom border. Logo on the left, "Home, Upload, Pricing, About" links in the center, and a rounded "Sign Up!" button in yellow on the far right.
+    * **Buttons:** Primary buttons are solid yellow with black text and rounded corners.
+    * **Inputs:** Dark slate background with subtle rounded corners.
+
+---
+
+### **2. Page Specifications**
+
+#### **Page A: Homepage (Landing)**
+* **Content:** A centered hero section with a brief value proposition: "Explain what the web application is and what it is used for."
+* **Layout:** Clean, minimal, focused on a clear call to action (CTA).
+
+#### **Page B: Authentication (Login/Sign-Up)**
+* **Header:** Large "AUTHENTICATION" title.
+* **Tabs:** Toggle between "Login" and "Sign Up" separated by a vertical divider.
+* **Form:** "User" and "Password" fields with a large yellow "Login" button.
+* **Social Auth:** An "Or" separator followed by rounded "Google" and "Facebook" OAuth buttons with brand icons.
+
+#### **Page C: Pricing**
+* **Header:** "PRICING" title with the sub-headline "Choose the plan that suits you best!".
+* **Grid:** Three vertical cards.
+* **Interactive State:** The selected card should feature a bright yellow border highlight.
+* **Card Content:** Includes the plan name (e.g., "Free"), a central feature list area, and a dark action button at the bottom.
+
+#### **Page D: Document Upload**
+* **Header:** "Upload Document" with the sub-text "Upload any legal document to get started."
+* **Control:** A wide, dark-gray upload bar containing a yellow "Choose" button on the left.
+
+#### **Page E: Summarized View (Dashboard)**
+* **Layout:** Three-card grid system.
+    * **Left Column:** A tall, large card for the main summary text.
+    * **Right Column:** Two stacked smaller cards for specific AI-generated metadata or extracted sections.
+* **Footer/Action:** A persistent upload bar at the bottom to allow for quick re-uploads.
+
+---

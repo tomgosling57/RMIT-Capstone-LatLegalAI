@@ -1,0 +1,18 @@
+# LatMatrix Frontend – Python dependencies
+# Install with:  pip install -r requirements.txt
+
+# --- Core ---
+python-dotenv>=1.0
+
+# --- Frontend ---
+streamlit>=1.32
+requests>=2.31
+
+# --- Authentication ---
+supabase>=2.5.0
+
+# --- Optional dependencies for enhanced functionality ---
+pdfplumber>=0.10          # Only needed if frontend processes documents directly
+streamlit-pdf-viewer>=0.0.5  # PDF preview functionality
+# python-docx>=1.1         # Only needed if frontend processes documents directly
+# spacy>=3.7               # Only needed if frontend does NLP locally

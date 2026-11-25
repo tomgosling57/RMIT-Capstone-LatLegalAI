@@ -1,0 +1,553 @@
+Summary,Issue key,Issue id,Issue Type,Status,Project key,Project name,Project type,Project description,Priority,Resolution,Created,Updated,Last Viewed,Resolved,Due date,Votes,Labels,Labels,Labels,Labels,Description,Environment,Original estimate,Remaining Estimate,Time Spent,Work Ratio,Σ Original Estimate,Σ Remaining Estimate,Σ Time Spent,Security Level,Custom field (Development),Custom field (Issue color),Custom field (Rank),Sprint,Sprint,Sprint,Custom field (Start date),Custom field (Story point estimate),Custom field (Team),Custom field (Vulnerability),Custom field (Vulnerability),Parent,Parent key,Parent summary,Status Category,Status Category Changed
+Add Input side by side view comparison to chat,AALA-72,10580,Task,Done,AALA,AA868 Latmatrix Legal Summariser,software,,Medium,Done,22/Apr/26 6:35 PM,28/Apr/26 3:54 PM,05/May/26 4:03 PM,28/Apr/26 3:54 PM,,0,,,,,"h3. Summary
+
+Add a side by side view comparison in the frontend chat. This will allow users to see their input document next to the generated summary.
+
+h3. Context
+
+The feature aims to enhance the user experience by providing a clear comparison between the input document and the generated summary. The view will vary based on the input type.
+
+h3. Acceptance criteria
+
+* Implement a side by side comparison in the summary view of the chat.
+* For PDF inputs, use the existing PDF viewer component.
+* For text or DOCX inputs, add a markdown component.
+
+h3. Other information
+
+N/A",,,,,,,,,,,,0|i000f7:,Sprint 5: End-to-End Pipeline,Sprint 5: End-to-End Pipelin 2,,,,,,,10575,AALA-67,AI Chat Interface,Done,28/Apr/26 3:54 PM
+Add Colour Scheme Styles,AALA-56,10500,Task,Done,AALA,AA868 Latmatrix Legal Summariser,software,,Medium,Done,19/Apr/26 8:07 PM,28/Apr/26 3:54 PM,,28/Apr/26 3:54 PM,,0,,,,," 
+*Summary:* Update frontend color scheme to business-like Blacket and white theme for LatLegal AI
+
+*Description:*
+Update the frontend color scheme to a professional, business-like Blacket and white color theme suitable for a Black Legal AI application.
+
+*Acceptance Criteria:*
+
+* [ ] Replace current color palette with Blacket and white theme
+* [ ] Ensure all UI components use the new color scheme
+* [ ] Maintain accessibility standards (contrast ratios)
+* [ ] Update CSS/styling files in the frontend",,,,,,,,,,,,0|i000f8:,Sprint 5: End-to-End Pipeline,Sprint 5: End-to-End Pipelin 2,,,,,,,10573,AALA-65,UI Theme & Branding,Done,28/Apr/26 3:54 PM
+Depcreate backend/src/routes/file_upload.py,AALA-96,10700,Task,Done,AALA,AA868 Latmatrix Legal Summariser,software,,Medium,Done,30/Apr/26 2:24 PM,05/May/26 4:16 PM,,05/May/26 4:16 PM,,0,,,,,"h3. Summary
+
+The file upload route in the backend has been deprecated. It needs to be removed along with any references to it.
+
+h3. Context
+
+The file upload functionality is no longer supported and should be eliminated from the codebase.
+
+h3. Acceptance criteria
+
+* Remove the file located at {{backend/src/routes/file_upload.py}}.
+* Identify and remove any uses of the file upload route throughout the codebase.
+
+h3. Other information
+
+N/A",,,,,,,,,,,,0|i000f8:4,Sprint 5: End-to-End Pipelin 2,,,,,,,,,,,Done,05/May/26 4:16 PM
+"Create Endpoints for Upload, Process, Get Result",AALA-75,10647,Story,Done,AALA,AA868 Latmatrix Legal Summariser,software,,High,Done,28/Apr/26 4:17 PM,05/May/26 4:16 PM,04/May/26 11:25 AM,05/May/26 4:16 PM,,0,api,backend,feature,,"h2. Description
+
+The current backend has a monolithic upload-then-process flow that does everything in a single request. For better reliability and user experience (especially with large legal documents), we need a multi-step async workflow:
+
+1. POST /api/v1/documents/upload — Accept a file upload, validate it, save it, and return a document_id immediately.
+
+2. POST /api/v1/documents/{document_id}/process — Trigger processing (text extraction, entity extraction, summarisation) asynchronously. Return a job_id and initial status.
+
+3. GET /api/v1/documents/{document_id}/result — Return the processed result once processing is complete. Return 202 Accepted with status if still processing.
+
+The existing DocumentController methods should be refactored to support this split workflow.
+
+h2. Acceptance Criteria
+
+⬜ POST /api/v1/documents/upload accepts a file, validates it, saves it, and returns {""document_id"": ""<uuid>"", ""status"": ""uploaded""} with HTTP 201.
+
+⬜ POST /api/v1/documents/{document_id}/process triggers async processing and returns {""job_id"": ""<uuid>"", ""status"": ""processing""} with HTTP 202.
+
+⬜ GET /api/v1/documents/{document_id}/result returns the full result when done (HTTP 200) or {""status"": ""processing""} when still in progress (HTTP 202).
+
+⬜ Processing includes: text extraction, entity extraction, and LLM summarisation (reusing existing services).
+
+⬜ File validation from magicNums.py is integrated into the upload step.
+
+⬜ Error responses return appropriate HTTP status codes (400 for bad input, 404 for unknown document_id, 500 for server errors).",,,,,,,,,,,,0|i000f8:6,Sprint 5: End-to-End Pipelin 2,,,,,,,,,,,Done,05/May/26 4:16 PM
+Add Request & Response Handling,AALA-76,10648,Task,Done,AALA,AA868 Latmatrix Legal Summariser,software,,Medium,Done,28/Apr/26 4:17 PM,04/May/26 3:33 PM,,04/May/26 3:33 PM,,0,api,backend,validation,,"h2. Description
+
+The current API endpoints lack consistent request validation and response formatting. This task adds proper request/response handling across all backend endpoints:
+
+1. Request Validation:
+
+  • Validate query parameters and path parameters with proper type hints and constraints.
+
+  • Add function to check size limits on file uploads for all (e.g., max 50MB).
+
+  • Make function to ensure allowed file types are enforced on all endpoints (PDF, DOCX, TXT, PNG, JPG).
+
+2. Response Formatting:
+
+  • Create a standard API response wrapper: {""success"": true/false, ""data"": {...}, ""error"": null|""...""}.
+
+  • Ensure all endpoints return consistent JSON structures.
+
+  • Add proper HTTP status codes (201 for creation, 202 for accepted, 400 for bad request, 404 for not found, 422 for validation errors, 500 for server errors).
+
+3. Content-Type Handling:
+
+  • Ensure all endpoints set appropriate Content-Type headers.
+
+  • Handle multipart/form-data for file uploads correctly.
+
+h2. Acceptance Criteria
+
+⬜ File upload size is limited to 50MB with a clear error message when exceeded.
+
+⬜ Only allowed file types (PDF, DOCX, TXT, PNG, JPG) are accepted.
+
+⬜ All responses follow a consistent {""success"": bool, ""data"": ..., ""error"": str|null} format.
+
+⬜ Appropriate HTTP status codes are used for all response scenarios.
+
+⬜ Invalid requests return descriptive error messages.
+
+⬜ The existing frontend integrations (website upload, Streamlit chat) continue to work.",,,,,,,,,,,,0|i000f8:9,Sprint 5: End-to-End Pipelin 2,,,,,,,,,,,Done,04/May/26 3:33 PM
+Add Logo and Product Name Branding,AALA-69,10577,Task,Done,AALA,AA868 Latmatrix Legal Summariser,software,,Medium,Done,22/Apr/26 6:30 PM,28/Apr/26 3:54 PM,,28/Apr/26 3:54 PM,,0,,,,,"h3. Summary
+
+The task is to add the logo and product name branding to the project.
+
+h3. Context
+
+This involves placing the logo and product name PNG files with a transparent background in the specified directory and updating the user interface accordingly.
+
+h3. Acceptance criteria
+
+* Add logo PNG to {{fronted/src/static/images}}.
+* Add product name PNG to {{fronted/src/static/images}}.
+* Update the UI to display both the logo and product name.
+
+h3. Other information
+
+N/A",,,,,,,,,,,,0|i000f8:i,Sprint 5: End-to-End Pipeline,Sprint 5: End-to-End Pipelin 2,,,,,,,10573,AALA-65,UI Theme & Branding,Done,28/Apr/26 3:54 PM
+Create prototype webpages based on the frontend design wireframes,AALA-73,10613,Task,Done,AALA,AA868 Latmatrix Legal Summariser,software,,Medium,Done,27/Apr/26 10:06 AM,28/Apr/26 3:54 PM,,28/Apr/26 3:54 PM,,0,,,,,"h3. Summary
+
+We are migrating from a Streamlit-only frontend to a new setup. This involves using FastAPI with Jinja templates for standard website pages. The Streamlit frontend will now only be used for the chat feature.
+
+h3. Context
+
+The migration aims to enhance the website's functionality and structure. The new approach will allow for better management of standard web pages while keeping the chat feature intact.
+
+h3. Acceptance criteria
+
+* Implement FastAPI with Jinja templates for standard website pages.
+* Ensure that the Streamlit frontend is used solely for the chat feature.
+
+h3. Other information
+
+N/A",,,,,,,,,,,,0|i000f8:r,Sprint 5: End-to-End Pipeline,Sprint 5: End-to-End Pipelin 2,,,,,,,,,,Done,28/Apr/26 3:54 PM
+Organise API Routes Properly in the Backend,AALA-74,10646,Task,Done,AALA,AA868 Latmatrix Legal Summariser,software,,High,Done,28/Apr/26 4:17 PM,04/May/26 3:33 PM,,04/May/26 3:33 PM,,0,api,backend,refactoring,,"h2. Description
+
+The current FastAPI backend has routes defined directly on the app instance alongside routes defined in separate router modules. There is also a duplicate /upload endpoint definition and dead code after return statements. The route registration only includes the chat router — the file_upload router exists but is never registered.
+
+This task requires a comprehensive reorganisation:
+
+1. Remove all route definitions from backend/src/main.py — move them into the appropriate router modules under backend/src/routes/.
+
+2. Fix the duplicate /upload endpoint issue.
+
+3. Register all routers (chat, file_upload, and any new ones) in backend/src/factory.py.
+
+4. Create a clear separation of concerns:
+
+  • routes/chat.py — chat/analysis endpoints
+
+  • routes/file_upload.py — file upload endpoints
+
+  • routes/health.py — health check and root endpoints
+
+5. Ensure consistent URL prefixing (e.g., /api/v1/...).
+
+h2. Acceptance Criteria
+
+⬜ All route definitions are removed from backend/src/main.py — it should only create the app and run it.
+
+⬜ The duplicate /upload endpoint is eliminated.
+
+⬜ All routers are registered in backend/src/factory.py.
+
+⬜ Routes follow a consistent prefix scheme (e.g., /api/v1/upload, /api/v1/chat/analyze).
+
+⬜ The existing /health and / endpoints continue to work after refactoring.
+
+⬜ All existing unit tests pass without modification.
+
+⬜ No dead/unreachable code remains in route files.",,,,,,,,,,,,0|i000f8:v,Sprint 5: End-to-End Pipelin 2,,,,,,,,,,,Done,04/May/26 3:33 PM
+Create Comparison Report — Firebase vs Supabase & RDB vs NoSQL,AALA-80,10652,Task,Done,AALA,AA868 Latmatrix Legal Summariser,software,,Medium,Done,28/Apr/26 4:17 PM,04/May/26 11:04 AM,04/May/26 3:33 PM,04/May/26 11:04 AM,,0,auth,database,documentation,research,"h3. Summary
+
+This issue involves creating a comparison report between Firebase and Supabase for a legal document summarization project. The report evaluates the best database architecture and backend platform.
+
+h3. Context
+
+The report is intended for project stakeholders and is authored by the Lead Software Engineer. It addresses the selection of a primary database and BaaS provider, focusing on the trade-offs between relational and NoSQL systems.
+
+h3. Acceptance criteria
+
+* Evaluate relational (PostgreSQL) and NoSQL (MongoDB/Firestore) systems.
+* Justifies a selection between relational or non relational db, comparing the benefits and limitations of each
+* Compare Supabase and Firebase as BaaS providers. Note that firebase has higher costs when scaled than supabase. Also note that supabase is open source and can be self hosted.
+* Analyze data model fit, query patterns, and full-text search capabilities.
+* Provide a comparison table of database capabilities.
+* Include authentication integration details and migration costs.
+* Present cost projections for different user scales.
+* Justify the recommendation for Supabase (PostgreSQL) over Firebase.
+* Outline next steps for implementation.
+
+h3. Other information
+
+* The report concludes that a relational approach powered by Supabase (PostgreSQL) is superior for scalability, cost predictability, and structural integrity.
+* Next steps include:
+*# Finalizing the migration of the {{DocumentProcessingPipeline}} to the Supabase {{documents}} table.
+*# Configuring RLS policies for {{entities}} and {{summaries}} tables.
+*# Saving the report to {{docs/database-comparison-report.md}}.(",,,,,,,,,,,,0|i000hx:,Sprint 5: End-to-End Pipelin 2,,,,,,,,,,,Done,04/May/26 11:04 AM
+Add user prompt capability to chat,AALA-71,10579,Task,Done,AALA,AA868 Latmatrix Legal Summariser,software,,Medium,Done,22/Apr/26 6:33 PM,19/May/26 3:48 PM,,19/May/26 3:48 PM,,0,,,,,"h3. Summary
+
+Add a user prompt capability to the chat interface. This involves integrating a prompt widget from Streamlit into the chat UI.
+
+h3. Context
+
+The goal is to enhance the chat functionality by allowing users to input prompts. This will be sent to the backend API for processing.
+
+h3. Acceptance criteria
+
+* Integrate the prompt widget from Streamlit into the chat UI.
+* Ensure user input from the prompt is included in the request to the backend API.
+* Modify the primary flow of the {{ui.py}} file to accommodate this change.
+
+h3. Other information
+
+Refer to the Streamlit documentation for details on the chat prompting widget.",,,,,,,,,,,,0|i000if:,Sprint 5: End-to-End Pipeline,Sprint 5: End-to-End Pipelin 2,Sprint: 7 OCR Improvements,,,,,,10575,AALA-67,AI Chat Interface,Done,19/May/26 3:48 PM
+Create comparison report for models and providers,AALA-92,10664,Task,Done,AALA,AA868 Latmatrix Legal Summariser,software,,Medium,Done,28/Apr/26 4:53 PM,04/May/26 3:34 PM,04/May/26 3:34 PM,04/May/26 11:23 AM,,0,,,,,"h3. Summary
+
+Create a comparison report to analyze the benefits and limitations of proprietary providers versus aggregate providers of AI models using APIs.
+
+h3. Context
+
+This report aims to provide insights into different types of AI model providers. It will focus on proprietary providers and aggregate providers.
+
+h3. Acceptance criteria
+
+* The report must include a detailed comparison of proprietary and aggregate providers.
+* It should outline the benefits of each type of provider.
+* Limitations of both proprietary and aggregate providers must be discussed.
+* The report should be based on the use of APIs for accessing AI models.
+
+h3. Other information
+
+N/A",,,,,,,,,,,,0|i000ip:,Sprint 5: End-to-End Pipelin 2,,,,,,,,,,,Done,04/May/26 11:23 AM
+Clickable Logo Link to Homepage of Website in Chat UI,AALA-93,10697,Task,Done,AALA,AA868 Latmatrix Legal Summariser,software,,Medium,Done,30/Apr/26 1:05 PM,19/May/26 3:48 PM,04/May/26 11:05 AM,19/May/26 3:48 PM,,0,,,,,"h3. Summary
+
+Add a clickable logo button in the streamlit chat. This button should navigate users back to the homepage of the website when clicked.
+
+h3. Context
+
+The transparent version of the logo is already used on the website service. It needs to be made available in the streamlit service.
+
+h3. Acceptance criteria
+
+* A clickable logo button is added to the streamlit chat.
+* The button navigates to the homepage of the website when clicked.
+* The transparent version of the logo is copied into the chat package.
+
+h3. Other information
+
+N/A",,,,,,,,,,,,0|i000l9:,Sprint 5: End-to-End Pipelin 2,Sprint: 7 OCR Improvements,,,,,,,,,,Done,19/May/26 3:48 PM
+Hotfix: Tune spaCy `max_length` and test entity extraction with large files,AALA-110,10746,Task,Done,AALA,AA868 Latmatrix Legal Summariser,software,,Medium,Done,04/May/26 12:43 PM,19/May/26 3:48 PM,18/May/26 10:50 AM,19/May/26 3:48 PM,,0,,,,,"h3. Summary
+
+This issue addresses a hotfix for the spaCy NLP model's {{max_length}} limit. The goal is to tune the {{SPACY_MAX_LENGTH}} to allow entity extraction on larger documents.
+
+h3. Context
+
+The spaCy model currently has a limit of 1,000,000 characters. Documents exceeding this limit cause a {{ValueError: [E088]}}, resulting in a generic 400 error. The controller skips entity extraction for texts over this limit, leading to empty entity lists.
+
+h3. Acceptance criteria
+
+# *Configurable limit raised*
+#* Increase {{SPACY_MAX_LENGTH}} in {{backend/src/config.py}} from 1,000,000 to a higher value (e.g., 5,000,000 or 10,000,000).
+#* Ensure it can still be overridden via the {{SPACY_MAX_LENGTH}} environment variable.
+#* Document the memory trade-off (~1GB RAM per 100,000 characters).
+# *Entity extraction re-enabled for moderately large files*
+#* Ensure files with cleaned text lengths between the old and new limits return non-empty entities.
+# *Test coverage added*
+#* Create a new test in {{scripts/API_Tests/test_api_upload.py}} (e.g., {{test_upload_large_file_with_entity_extraction}}).
+#* Test should upload a file that exceeds the old limit but is under the new limit.
+#* Assert {{status_code == 200}} and that the response contains non-empty {{entities}}.
+# *Existing tests still pass*
+#* Ensure {{test_upload_large_file}} (the ~27M file exceeding the new limit) returns 200 with empty entities.
+#* All other upload tests should pass.
+# *Memory consideration documented*
+#* Justify the chosen value in a comment or PR description, referencing spaCy's ~1GB/100K-char memory guidance and available RAM.
+
+h3. Other information
+
+N/A",,,,,,,,,,,,0|i000lg:i,Sprint 5: End-to-End Pipelin 2,Sprint: 7 OCR Improvements,,,,,,,,,,Done,19/May/26 3:48 PM
+Fix LLM API Chunk Encoding Error,AALA-94,10698,Bug,Done,AALA,AA868 Latmatrix Legal Summariser,software,,Medium,Done,30/Apr/26 2:08 PM,04/May/26 10:15 AM,,04/May/26 10:15 AM,,0,,,,,In the chat you if you upload a file and try to get a summary you get an error saying chunk decoding error this is likely an issue with the streaming messages response implementation. ,,,,,,,,,,,,0|i000lh:,Sprint 5: End-to-End Pipelin 2,,,,,,,,,,,Done,04/May/26 10:15 AM
+Eliminate Redundant Chat Pages and Conceal Developer Tools,AALA-95,10699,Bug,Done,AALA,AA868 Latmatrix Legal Summariser,software,,Medium,Done,30/Apr/26 2:11 PM,04/May/26 10:46 AM,04/May/26 11:00 AM,04/May/26 10:46 AM,,0,,,,,Removed the redundant entity extraction and sentiment analysis pages from the chat UI as well as concealed the develop a tool page using an environment variable called dev mode,,,,,,,,,,,,0|i000lp:,Sprint 5: End-to-End Pipelin 2,,,,,,,,,,,Done,04/May/26 10:46 AM
+"[PR#62] Fix jira script inconsistencies (AALA 104,105,106)",AALA-111,10747,Task,Done,AALA,AA868 Latmatrix Legal Summariser,software,,Medium,Done,04/May/26 1:28 PM,04/May/26 3:33 PM,04/May/26 1:28 PM,04/May/26 3:33 PM,,0,,,,,"h3. Summary
+
+This issue aims to fix inconsistencies in the Jira scripts as described in related issues AALA 104, 105, and 106.
+
+h3. Context
+
+The issue arises from discrepancies in the Jira scripts that need to be addressed to ensure proper functionality.
+
+h3. Acceptance criteria
+
+* Fix all inconsistencies mentioned in issues AALA 104, 105, and 106.
+
+h3. Other information
+
+N/A",,,,,,,,,,,,0|i000lp:2,Sprint 5: End-to-End Pipelin 2,,,,,,,,,,,Done,04/May/26 3:33 PM
+"[PR#62] jira-update-issues.py uses API v3, jira-get-issues.py uses API v2",AALA-105,10741,Task,Done,AALA,AA868 Latmatrix Legal Summariser,software,,Medium,Done,04/May/26 10:59 AM,04/May/26 3:33 PM,,04/May/26 3:33 PM,,0,,,,,"Severity: Medium
+File: scripts/jira/jira-update-issues.py:50
+
+jira-update-issues.py uses Jira REST API v3 (/rest/api/3/issue/) while jira-get-issues.py uses API v2 (/rest/api/2/issue/bulkfetch). This inconsistency can cause confusion and compatibility issues.
+
+Fix: Standardize on one API version across all scripts.",,,,,,,,,,,,0|i000lp:4,Sprint 5: End-to-End Pipelin 2,,,,,,,,,,,Done,04/May/26 3:33 PM
+Duplicate routes in chat blueprint (/extract-text-entities & /upload),AALA-97,10733,Bug,Done,AALA,AA868 Latmatrix Legal Summariser,software,,Medium,Done,04/May/26 10:34 AM,04/May/26 3:33 PM,04/May/26 3:33 PM,04/May/26 3:33 PM,,0,,,,,"h3. Impact
+
+The {{/extract-text-entities}} endpoint is redundant with the {{/upload}} endpoint. Users may receive unnecessary information from both endpoints, leading to confusion.
+
+h3. Expected behaviour
+
+The {{/extract-text-entities}} endpoint should return only extracted text and entities, not the file summary.
+
+h3. Actual behaviour
+
+The {{/extract-text-entities}} endpoint currently calls the same method as the {{/upload}} endpoint. Both endpoints return identical responses, including text content, extracted entities, and file metadata.
+
+h3. Steps to reproduce
+
+* Call the {{POST /extract-text-entities}} endpoint with a file.
+* Observe the response returned by the endpoint.
+* Call the {{POST /upload}} endpoint with the same file.
+* Compare the responses from both endpoints.
+
+h3. Environment
+
+N/A
+
+h3. Workarounds
+
+N/A
+
+h3. Other information
+
+* Current Code:
+{code:python}@router.post(""/extract-text-entities"")
+async def extract_text_and_entities(
+    file: UploadFile = File(), extraction_mode: str = Form(""flow"")
+):
+    controller = controller_factory()
+    return await controller.upload_file(file, extraction_mode){code}
+* Expected Outcome:
+** *Option 1*: If retained, it should call a method that returns only text and entities.
+** *Option 2*: If redundant, it should be deleted from the codebase.
+* Recommendation: Assess the usage of the {{/extract-text-entities}} endpoint. Consider removing or refactoring it.",,,,,,,,,,,,0|i000lp:9,Sprint 5: End-to-End Pipelin 2,,,,,,,,,,,Done,04/May/26 3:33 PM
+[PR#62] get_batch_issues() uses POST /rest/api/2/issue/bulkfetch — may not exist in v2,AALA-106,10742,Task,Done,AALA,AA868 Latmatrix Legal Summariser,software,,Medium,Done,04/May/26 10:59 AM,04/May/26 3:33 PM,,04/May/26 3:33 PM,,0,,,,,"Severity: Medium
+File: scripts/jira/jira-get-issues.py (get_batch_issues function)
+
+The get_batch_issues() function uses POST /rest/api/2/issue/bulkfetch. The Jira REST API v2 documentation does not include this endpoint. Bulk fetch is available in API v3 as POST /rest/api/3/issue/bulkfetch.
+
+Fix: Use API v3 for the bulk fetch endpoint, or implement batch fetching using individual v2 calls.",,,,,,,,,,,,0|i000lp:i,Sprint 5: End-to-End Pipelin 2,,,,,,,,,,,Done,04/May/26 3:33 PM
+`analyze_document` lost `pre_extracted_entities` parameter,AALA-98,10734,Bug,Done,AALA,AA868 Latmatrix Legal Summariser,software,,Medium,Done,04/May/26 10:37 AM,04/May/26 3:33 PM,04/May/26 10:38 AM,04/May/26 3:33 PM,,0,,,,,"h3. Impact
+
+The {{analyze_document}} method has lost the {{pre_extracted_entities}} parameter. This impacts users by causing the LLM to re-extract entities that spaCy has already identified. As a result, there is an increase in cost and latency for each {{analyze-document}} call.
+
+h3. Expected behaviour
+
+The system should pass {{pre_extracted_entities=entities}} to the LLM summariser. This allows the LLM to focus on summarization without re-discovering entities.
+
+h3. Actual behaviour
+
+The current behaviour of the system is that the LLM does not receive the {{pre_extracted_entities}} parameter. The code currently looks like this:
+
+{code:python}llm_result = llm_backend.summarise(cleaned_text){code}
+
+h3. Steps to reproduce
+
+* Review the code in {{backend/src/controllers/document.py}}.
+* Check the implementation of the {{analyze_document}} method.
+* Observe that {{pre_extracted_entities}} is not being passed to the LLM summariser.
+
+h3. Environment
+
+N/A
+
+h3. Workarounds
+
+N/A
+
+h3. Other information
+
+* Previous code for reference:
+
+{code:python}llm_result = llm_backend.summarise(
+    cleaned_text,
+    pre_extracted_entities=entities,
+){code}",,,,,,,,,,,,0|i000lq:,Sprint 5: End-to-End Pipelin 2,,,,,,,,,,,Done,04/May/26 3:33 PM
+[PR#62] jira-update-issues.py mutates input list with item.pop('key'),AALA-104,10740,Task,Done,AALA,AA868 Latmatrix Legal Summariser,software,,Medium,Done,04/May/26 10:59 AM,04/May/26 3:33 PM,,04/May/26 3:33 PM,,0,,,,,"Severity: Medium
+File: scripts/jira/jira-update-issues.py:47
+
+item.pop('key') mutates the dictionaries in the caller's update_list. After the function returns, every dict in the list has been stripped of its 'key' field — a destructive side effect.
+
+Fix: Use item.get('key') or item['key'] instead of item.pop('key').",,,,,,,,,,,,0|i000lr:,Sprint 5: End-to-End Pipelin 2,,,,,,,,,,,Done,04/May/26 3:33 PM
+Implement summarization display,AALA-36,10320,Task,Done,AALA,AA868 Latmatrix Legal Summariser,software,,Medium,Done,07/Apr/26 9:38 PM,04/May/26 10:46 AM,,04/May/26 10:46 AM,,0,frontend,streamlit,ui,,"Update the `frontend/src/ui.py` to display the structured summarization results from the backend in a user-friendly format. This includes sections for the plain-English summary, key extractions, and potentially translation options.
+
+Acceptance Criteria:
+- Streamlit UI fetches and displays structured summarization data
+- Clearly presents summary, extracted clauses, and confidence scores
+- Handles different display formats for various data types
+- Updates frontend to interact with the new `/summarize` endpoint
+- Includes basic styling for readability",,,,,,,,,,,,0|i000lt:,Sprint 5: End-to-End Pipelin 2,,,,,,,,,,,Done,04/May/26 10:46 AM
+"[PR#62] configure_logging() called at module import time, breaks test isolation",AALA-101,10737,Task,Done,AALA,AA868 Latmatrix Legal Summariser,software,,Medium,Done,04/May/26 10:59 AM,04/May/26 1:25 PM,04/May/26 1:24 PM,04/May/26 1:25 PM,,0,,,,,"Severity: High
+File: backend/src/factory.py:25
+
+configure_logging() is called at module level in factory.py, executing the moment any code imports from factory.py. This calls logger.handlers.clear() on the root logger, removing handlers configured by other tests or pytest itself. It also creates the logs/ directory and opens file handles during test collection.
+
+Fix: Move configure_logging() inside create_app() for lazy initialization.",,,,,,,,,,,,0|i000md:,Sprint 5: End-to-End Pipelin 2,,,,,,,,,,,Done,04/May/26 1:25 PM
+[PR#62] base_parser.py uses logging.getLogger() instead of project get_logger(),AALA-102,10738,Task,Done,AALA,AA868 Latmatrix Legal Summariser,software,,Medium,Done,04/May/26 10:59 AM,04/May/26 1:25 PM,,04/May/26 1:25 PM,,0,,,,,"Severity: Medium
+File: backend/src/services/parsers/base_parser.py:1060
+
+The new logging in base_parser.py uses the standard library's logging.getLogger() directly, rather than the project's get_logger() from logging_config.py. This means any future custom logger setup won't apply.
+
+Fix: Replace with 'from logging_config import get_logger' and logger = get_logger(__name__).",,,,,,,,,,,,0|i000mf:,Sprint 5: End-to-End Pipelin 2,,,,,,,,,,,Done,04/May/26 1:25 PM
+[PR#62] llm_backend.py uses logging.getLogger() instead of project get_logger(),AALA-103,10739,Task,Done,AALA,AA868 Latmatrix Legal Summariser,software,,Medium,Done,04/May/26 10:59 AM,04/May/26 1:25 PM,,04/May/26 1:25 PM,,0,,,,,"Severity: Medium
+File: backend/src/services/llm_backend.py:924
+
+The LLMBackend.summarise() method creates a local logger using logging.getLogger() directly, while the rest of the project uses get_logger() from logging_config.py.
+
+Fix: Import get_logger from logging_config and use it consistently.",,,,,,,,,,,,0|i000mg:,Sprint 5: End-to-End Pipelin 2,,,,,,,,,,,Done,04/May/26 1:25 PM
+[PR#62] Relative 'logs' path creates directory based on CWD,AALA-107,10743,Task,Done,AALA,AA868 Latmatrix Legal Summariser,software,,Medium,Done,04/May/26 10:59 AM,04/May/26 1:25 PM,,04/May/26 1:25 PM,,0,,,,,"Severity: Low
+File: backend/src/factory.py:25
+
+The log directory 'logs' is a relative path. The actual directory created depends on the current working directory when the application starts. The .gitignore ignores backend/src/logs/, suggesting that's the intended location, but this isn't enforced.
+
+Fix: Use an absolute path derived from __file__.",,,,,,,,,,,,0|i000mg:x,Sprint 5: End-to-End Pipelin 2,,,,,,,,,,,Done,04/May/26 1:25 PM
+[PR#62] Middleware logs query params but main endpoints are POST with form data,AALA-108,10744,Task,Done,AALA,AA868 Latmatrix Legal Summariser,software,,Medium,Done,04/May/26 10:59 AM,04/May/26 1:25 PM,,04/May/26 1:25 PM,,0,,,,,"Severity: Low
+File: backend/src/middleware.py:893
+
+The RequestLoggingMiddleware logs query parameters, but the main API endpoints (/upload, /analyze-document, etc.) are all POST endpoints that receive data via form fields or file uploads — not query params.
+
+Fix: For POST requests, log Content-Type and Content-Length headers instead.",,,,,,,,,,,,0|i000mg:y,Sprint 5: End-to-End Pipelin 2,,,,,,,,,,,Done,04/May/26 1:25 PM
+[PR#62] Inconsistent async test patterns in TestRequestLogging,AALA-109,10745,Task,Done,AALA,AA868 Latmatrix Legal Summariser,software,,Medium,Done,04/May/26 10:59 AM,04/May/26 1:25 PM,,04/May/26 1:25 PM,,0,,,,,"Severity: Low
+File: backend/src/tests/test_error_handling.py:1719
+
+Within TestRequestLogging, one test uses @pytest.mark.asyncio with async def, while the other uses a regular def. Both call client.get() synchronously via TestClient, so the async marker is unnecessary.
+
+Fix: Remove @pytest.mark.asyncio and change async def to def.",,,,,,,,,,,,0|i000mg:z,Sprint 5: End-to-End Pipelin 2,,,,,,,,,,,Done,04/May/26 1:25 PM
+Creates sprint 5 summary report,AALA-112,10780,Task,Done,AALA,AA868 Latmatrix Legal Summariser,software,,Medium,Done,05/May/26 4:12 PM,05/May/26 4:14 PM,05/May/26 4:12 PM,05/May/26 4:14 PM,,0,,,,,"h3. Summary
+
+Create a summary report for sprint 5. This report will utilize Jira issues and the end of sprint pull request diff for merging from develop into main.
+
+h3. Context
+
+The report aims to provide insights into the completed issues during sprint 5. It will also cover metrics related to code changes and architectural decisions.
+
+h3. Acceptance criteria
+
+* Summary of issues completed in sprint 5.
+* Metrics for:
+** Amount of code created.
+** Amount of code deleted.
+** Files edited.
+* Explanation of architectural changes.
+* Justification for design choices.
+* Create a agent skill to automate summary report generation in the future.
+
+h3. Other information
+
+N/A",,,,,,,,,,,,0|i000mj:,Sprint 5: End-to-End Pipelin 2,,,,,,,,,,,Done,05/May/26 4:14 PM
+Add Basic Error Handling,AALA-77,10649,Task,Done,AALA,AA868 Latmatrix Legal Summariser,software,,Medium,Done,28/Apr/26 4:17 PM,04/May/26 2:50 PM,,04/May/26 2:50 PM,,0,backend,error-handling,reliability,,"h2. Description
+
+The backend lacks centralised error handling. Exceptions can bubble up as unhandled 500 errors, and error messages may expose internal details. This task adds:
+
+1. Global Exception Handlers:
+
+  • Register exception handlers for RequestValidationError, HTTPException, and unhandled Exception.
+
+  • Never expose stack traces or internal paths in production responses.
+
+2. Structured Error Responses:
+
+  • All errors return: {""success"": false, ""error"": {""code"": ""ERROR_CODE"", ""message"": ""Human-readable message"", ""details"": {...}}}
+
+3. Logging:
+
+  • Add structured logging with JSON formatting.
+
+  • Log all errors with traceback at ERROR level.
+
+  • Log all requests at INFO level with method, path, status code, and duration.
+
+4. Graceful Degradation:
+
+  • If LLM backend is unavailable, return a partial result with extracted text and entities but a note that summarisation is unavailable.
+
+  • If a file cannot be parsed, return a clear error indicating which file and why.
+
+h2. Acceptance Criteria
+
+⬜ Global exception handlers are registered and catch all unhandled exceptions.
+
+⬜ Error responses never expose stack traces or internal paths.
+
+⬜ All errors follow the structured {""success"": false, ""error"": {...}} format.
+
+⬜ Request logging is implemented with method, path, status code, and duration.
+
+⬜ LLM summarisation failure returns partial results instead of a 500 error.
+
+⬜ File parsing failures return clear, user-friendly error messages.
+
+⬜ Logs are written to both stdout (for Docker) and a rotating file handler.",,,,,,,,,,,,0|i000ml:,Sprint 5: End-to-End Pipelin 2,,,,,,,,,,,Done,04/May/26 2:50 PM
+Test API Using Python Scripts,AALA-78,10650,Task,Done,AALA,AA868 Latmatrix Legal Summariser,software,,Medium,Done,28/Apr/26 4:17 PM,04/May/26 2:50 PM,,04/May/26 2:50 PM,,0,api,automation,testing,,"h2. Description
+
+Create Python test scripts to validate all API endpoints programmatically. These scripts should:
+
+1. Test Scripts:
+
+  • scripts/test_api_upload.py — Test file upload with valid/invalid files.
+
+  • scripts/test_api_process.py — Test the process endpoint, verify async job creation.
+
+  • scripts/test_api_result.py — Test the result retrieval, verify full pipeline output.
+
+  • scripts/test_api_error_handling.py — Test error scenarios.
+
+  • scripts/test_api_full_flow.py — End-to-end test: upload → process → poll → verify result.
+
+2. Test Coverage:
+
+  • Happy path: valid file upload, successful processing, correct result format.
+
+  • Error paths: invalid file type, oversized file, missing file, non-existent document_id.
+
+  • Edge cases: empty files, very large files, files with unusual characters in names.
+
+3. Reporting:
+
+  • Scripts should output pass/fail for each test case.
+
+  • Optional: generate a simple HTML or JSON report.
+
+h2. Acceptance Criteria
+
+⬜ All test scripts run successfully against a running backend instance.
+
+⬜ Happy path tests pass: upload valid PDF/DOCX/TXT → process → get result with text + entities + summary.
+
+⬜ Error path tests return appropriate HTTP status codes and error messages.
+
+⬜ Edge case tests handle empty files, oversized files gracefully.
+
+⬜ A README.md in scripts/ documents how to run the tests.
+
+⬜ Test scripts can be run with a single command: python scripts/test_api_full_flow.py.
+
+⬜ Test scripts accept a --base-url argument to target different environments.",,,,,,,,,,,,0|i000mn:,Sprint 5: End-to-End Pipelin 2,,,,,,,,,,,Done,04/May/26 2:50 PM

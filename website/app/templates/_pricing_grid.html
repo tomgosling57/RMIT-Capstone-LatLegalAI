@@ -1,0 +1,27 @@
+<div id="pricing-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:24px;">
+  {% for plan in plans %}
+  <div
+    class="pricing-card {{ 'selected' if selected == plan.id }}"
+    hx-post="/pricing/select"
+    hx-vals='{"plan_id": "{{ plan.id }}"}'
+    hx-target="#pricing-grid"
+    hx-swap="outerHTML"
+    style="
+      background: var(--surface);
+      border-radius: 16px;
+      padding: 32px;
+      border: 2px solid {{ 'var(--gold)' if selected == plan.id else 'transparent' }};
+      cursor: pointer;
+      transition: border-color 0.2s;
+    "
+  >
+    <h3 style="font-size:1.3rem; font-weight:700; margin-bottom:8px; color: var(--gold);">{{ plan.name }}</h3>
+    <ul style="list-style:none; margin-bottom:24px;">
+      {% for f in plan.features %}
+      <li style="padding: 6px 0; color:#ccc; font-size:0.95rem;">✓ {{ f }}</li>
+      {% endfor %}
+    </ul>
+    <button class="btn-primary" style="width:100%; text-align:center;">Get Started</button>
+  </div>
+  {% endfor %}
+</div>

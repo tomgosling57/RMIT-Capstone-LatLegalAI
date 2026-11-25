@@ -1,0 +1,98 @@
+[
+  {
+    "sentence": "The tenant shall pay rent on the first of each month.",
+    "labels": {
+      "obligation": true,
+      "permission": false,
+      "risk": false
+    }
+  },
+  {
+    "sentence": "The tenant may sublet the property with written consent.",
+    "labels": {
+      "obligation": false,
+      "permission": true,
+      "risk": false
+    }
+  },
+  {
+    "sentence": "The landlord must maintain the property in good condition.",
+    "labels": {
+      "obligation": true,
+      "permission": false,
+      "risk": false
+    }
+  },
+  {
+    "sentence": "The tenant is liable for any damages caused.",
+    "labels": {
+      "obligation": false,
+      "permission": false,
+      "risk": true
+    }
+  },
+  {
+    "sentence": "The tenant can access the property with permission.",
+    "labels": {
+      "obligation": false,
+      "permission": true,
+      "risk": false
+    }
+  },
+  {
+    "sentence": "This agreement may be terminated with 30 days notice.",
+    "labels": {
+      "obligation": false,
+      "permission": true,
+      "risk": false
+    }
+  },
+  {
+    "sentence": "The tenant is responsible for utility payments.",
+    "labels": {
+      "obligation": true,
+      "permission": false,
+      "risk": false
+    }
+  },
+  {
+    "sentence": "The landlord is permitted to inspect the property.",
+    "labels": {
+      "obligation": false,
+      "permission": true,
+      "risk": false
+    }
+  },
+  {
+    "sentence": "Breaching this contract will result in penalties.",
+    "labels": {
+      "obligation": false,
+      "permission": false,
+      "risk": true
+    }
+  },
+  {
+    "sentence": "The tenant agrees to follow all building rules.",
+    "labels": {
+      "obligation": true,
+      "permission": false,
+      "risk": false
+    }
+  },
+  {
+    "sentence": "The company may terminate the agreement at any time, which may result in loss of access to all stored data.",
+    "labels": {
+      "obligation": false,
+      "permission": true,
+      "risk": true
+    }
+  },
+  {
+    "sentence": "The user must comply with all security requirements, failure of which may result in account suspension and liability for damages.",
+    "labels": {
+      "obligation": true,
+      "permission": false,
+      "risk": true
+    }
+  }
+]

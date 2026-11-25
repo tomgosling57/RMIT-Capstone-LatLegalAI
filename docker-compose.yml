@@ -1,0 +1,215 @@
+# docker-compose.yml — LatMatrix Legal Simplifier
+#
+# Services
+# --------
+#   api      — FastAPI backend (document processing, AI summarisation)
+#   website  — Flask website service (auth, home, pricing, upload form)
+#   chat     — Streamlit chat service (AI document analysis UI — auth-gated)
+#   chainlit — Chainlit conversational AI service (document analysis via chat)
+#   redis    — Shared Redis (rate-limiter backend + doc-context bridge)
+#   nginx    — Reverse proxy (routes / → website, /app → chat, /chat → chainlit)
+#
+# Legacy service (deprecated)
+# ---------------------------
+#   frontend — Original Streamlit prototype, now renamed to legacy_frontend/.
+#              Kept for reference only; not deployed in production.
+#              Start with: docker-compose --profile legacy up
+
+services:
+
+  # --------------------------------------------------------------------------
+  # FastAPI Backend Service
+  # --------------------------------------------------------------------------
+  api:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: latmatrix-api
+    env_file:
+      - .env
+    environment:
+      - SERVICE=api
+      - PORT=8000
+    ports:
+      - "8000:8000"
+    networks:
+      - latmatrix-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    volumes:
+      - ./backend/src:/app/src
+      - ./tests:/app/tests
+      - api_logs:/app/src/logs
+
+  # --------------------------------------------------------------------------
+  # Flask Website Service
+  # Handles: home, pricing, auth (login/signup/OAuth), upload form
+  # --------------------------------------------------------------------------
+  website:
+    build:
+      context: ./website
+      dockerfile: Dockerfile
+    container_name: latmatrix-website
+    env_file:
+      - .env
+    environment:
+     # - SUPABASE_URL=${SUPABASE_URL}
+     # - SUPABASE_KEY=${SUPABASE_KEY}
+      - SECRET_KEY=${SECRET_KEY}
+      - API_URL=http://api:8000
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - RATELIMIT_STORAGE_URI=redis://redis:6379/2
+      - FLASK_ENV=${FLASK_ENV:-production}
+      - CHAT_EXTERNAL_URL=http://localhost/chat
+    networks:
+      - latmatrix-network
+    depends_on:
+      api:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+
+  # --------------------------------------------------------------------------
+  # Streamlit Chat Service
+  # Handles: AI document analysis UI (auth-gated via Supabase JWT)
+  # Does NOT handle: login, signup, home, pricing — those are in website/
+  # --------------------------------------------------------------------------
+  chat:
+    build:
+      context: .
+      dockerfile: chat/Dockerfile
+    container_name: latmatrix-chat
+    env_file:
+      - .env
+    environment:
+     # - SUPABASE_URL=${SUPABASE_URL}
+     # - SUPABASE_KEY=${SUPABASE_KEY}
+      - API_BASE_URL=http://api:8000
+    networks:
+      - latmatrix-network
+    depends_on:
+      api:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/app/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    restart: unless-stopped
+
+  # --------------------------------------------------------------------------
+  # Chainlit Conversational AI Service
+  # Handles: Conversational AI interface for legal document analysis
+  # Uses Chainlit framework with LLM integration via LiteLLM
+  # --------------------------------------------------------------------------
+  chainlit:
+    build:
+      context: .
+      dockerfile: chainlit/Dockerfile
+    container_name: latmatrix-chainlit
+    env_file:
+      - .env
+    environment:
+      - API_BASE_URL=http://api:8000
+      - CHAINLIT_PORT=8001
+      - CHAINLIT_AUTH_SECRET=${CHAINLIT_AUTH_SECRET}
+    volumes:
+      # Persist SQLite DB and uploaded files across container restarts.
+      - chainlit_data:/app/data
+      # Bind-mount source code for development (no rebuild needed on changes).
+      - ./chainlit/src:/app/src
+      - ./chainlit/app.py:/app/app.py
+    networks:
+      - latmatrix-network
+    depends_on:
+      api:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/chat/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    restart: unless-stopped
+
+  # --------------------------------------------------------------------------
+  # Redis
+  # db=0  — document context bridge (pending_doc:<user_id>, TTL 300 s)
+  # db=2  — Flask-Limiter rate-limit counters
+  # --------------------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: latmatrix-redis
+    command: >
+      redis-server
+      --appendonly yes
+      --appendfsync everysec
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    networks:
+      - latmatrix-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    restart: unless-stopped
+
+  # --------------------------------------------------------------------------
+  # Nginx Reverse Proxy
+  # /app  → chat service (Streamlit, port 8501) — WebSocket upgrade required
+  # /chat → chainlit service (Chainlit, port 8000) — WebSocket upgrade required
+  # /     → website service (Flask, port 5000)
+  # --------------------------------------------------------------------------
+  nginx:
+    image: nginx:alpine
+    container_name: latmatrix-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - chainlit_data:/data/chainlit:ro
+    networks:
+      - latmatrix-network
+    depends_on:
+      website:
+        condition: service_healthy
+      chat:
+        condition: service_healthy
+      chainlit:
+        condition: service_healthy
+    restart: unless-stopped
+
+networks:
+  latmatrix-network:
+    driver: bridge
+
+volumes:
+  redis_data:
+    driver: local
+  api_logs:
+    driver: local
+  chainlit_data:
+    driver: local

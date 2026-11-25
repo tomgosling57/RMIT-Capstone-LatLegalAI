@@ -1,0 +1,82 @@
+# Streamlit configuration file for LatLegal AI Frontend
+# This replaces command-line arguments in Dockerfile
+
+[server]
+# The port where the server will listen for browser connections
+port = 8501
+
+# The address where the server will listen for client and browser connections
+address = "0.0.0.0"
+
+# Enables support for Cross-Origin Resource Sharing (CORS) protection
+enableCORS = true
+
+# Enables support for Cross-Site Request Forgery (XSRF) protection
+enableXsrfProtection = true
+
+# Max size, in megabytes, for files uploaded with the file_uploader
+maxUploadSize = 200
+
+# Max size, in megabytes, of messages that can be sent via the WebSocket connection
+maxMessageSize = 200
+
+# Enables support for websocket compression
+enableWebsocketCompression = true
+
+# The interval (in seconds) at which the server pings the client to keep the websocket connection alive
+websocketPingInterval = 30
+
+# Change the type of file watcher used by Streamlit
+fileWatcherType = "none"
+
+# Headless mode for Docker (no browser)
+headless = false
+
+# Don't show email prompt in Docker
+showEmailPrompt = false
+
+# Don't automatically rerun script when file is modified
+runOnSave = false
+
+# Base URL path — served behind nginx under /app
+baseUrlPath = "/app"
+
+[browser]
+# Internet address where users should point their browsers
+# This is the address the browser uses to reach the app.
+# Since nginx proxies /app → Streamlit on port 80, the browser
+# connects via nginx on the default HTTP port, not directly to 8501.
+serverAddress = "localhost"
+
+# Whether to send usage statistics to Streamlit
+gatherUsageStats = false
+
+[client]
+# Show error details in browser
+showErrorDetails = "full"
+
+# Toolbar mode
+toolbarMode = "auto"
+
+[runner]
+# Allow magic commands
+magicEnabled = true
+
+# Handle script rerun requests immediately
+fastReruns = true
+
+[logger]
+# Level of logging
+level = "info"
+
+[theme]
+# LatLegal AI — Dark Navy & Gold theme
+# These values are applied natively by Streamlit so the base UI
+# (menus, tooltips, sidebar, etc.) renders correctly before our
+# custom CSS even loads.
+primaryColor = "#FFD700"
+backgroundColor = "#05070A"
+secondaryBackgroundColor = "#0D1020"
+textColor = "#FFFFFF"
+font = "sans serif"
+base = "dark"

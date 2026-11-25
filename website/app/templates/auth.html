@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}{% if tab == 'signup' %}Sign Up{% else %}Log In{% endif %} — LatLegal AI{% endblock %}
+
+{% block extra_head %}
+<style>
+  /* ── OAuth button variants ── */
+  .btn-oauth-google {
+    background: #ffffff;
+    color: #0a0a0a;
+    border: 2px solid #e0e0e0;
+    font-weight: 600;
+  }
+  .btn-oauth-google:hover {
+    background: #f8f9fa;
+    border-color: #0a0a0a;
+  }
+
+  .btn-oauth-facebook {
+    background: #1877f2;
+    color: #ffffff;
+    border: 2px solid #1877f2;
+    font-weight: 600;
+  }
+  .btn-oauth-facebook:hover {
+    background: #166fe5;
+    border-color: #166fe5;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+  <div class="auth-card">
+    <div class="auth-heading">Authentication</div>
+
+    <div class="tab-switcher">
+      <a href="/auth/login" class="{{ 'active' if tab == 'login' }}">Login</a>
+      <a href="/auth/signup" class="{{ 'active' if tab == 'signup' }}">Sign Up</a>
+    </div>
+
+    {% if error %}
+    <div class="alert-error">{{ error }}</div>
+    {% endif %}
+
+    {% if tab == 'signup' %}
+    <form method="POST" action="/auth/signup">
+    {% else %}
+    <form method="POST" action="/auth/login">
+    {% endif %}
+      <div class="form-group">
+        <label for="email">User</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="you@example.com"
+          required
+          autocomplete="email"
+        >
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="••••••••"
+          required
+          autocomplete="{% if tab == 'signup' %}new-password{% else %}current-password{% endif %}"
+          minlength="8"
+        >
+      </div>
+      <button type="submit" class="btn-primary form-submit">
+        {% if tab == 'signup' %}Create Account{% else %}Login{% endif %}
+      </button>
+    </form>
+
+    <div class="divider">Or</div>
+
+    <div class="oauth-buttons">
+      <a href="/auth/oauth/google" class="btn-oauth btn-oauth-google">
+        <img src="data:image/png;base64,{{ google_logo_b64 }}" width="20" height="20" alt="Google logo">
+        <span>Continue with Google</span>
+      </a>
+
+      <a href="/auth/oauth/facebook" class="btn-oauth btn-oauth-facebook">
+        <img src="data:image/png;base64,{{ facebook_logo_b64 }}" width="20" height="20" alt="Facebook logo">
+        <span>Continue with Facebook</span>
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

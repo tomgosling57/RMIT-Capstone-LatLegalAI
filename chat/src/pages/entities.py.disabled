@@ -1,0 +1,123 @@
+import streamlit as st
+import requests
+from components.topbar import topbar
+from components.theme import apply_theme
+from auth_guard import require_auth, check_credentials
+import os
+
+
+# ---------------------------------------------------------------------------
+# Auth guard — ensures the user is authenticated (or stub mode if no creds)
+# ---------------------------------------------------------------------------
+check_credentials()
+user = require_auth()
+
+st.set_page_config(
+    page_title="BlackLegalAI - Entity Analyzer", layout="wide", page_icon="🔍"
+)
+
+# Apply the theme
+apply_theme()
+topbar()
+
+st.markdown(
+    """
+    # 🔍 Entity Analyzer
+    Extract and analyze entities from legal documents
+    """
+)
+
+uploaded_file = st.file_uploader(
+    "Choose a file",
+    type=["pdf", "txt", "png", "jpg", "jpeg", "doc", "docx"],
+    help="Supported: PDF, TXT, PNG, JPG, DOC, DOCX",
+)
+
+if uploaded_file is not None:
+    st.success(f"✅ Uploaded: {uploaded_file.name}")
+
+    # File details
+    st.write("### File Details")
+    st.write(f"**Filename:** {uploaded_file.name}")
+    st.write(f"**Size:** {uploaded_file.size / 1024:.2f} KB")
+    st.write(f"**Type:** {uploaded_file.type}")
+
+    # Placeholder for next step
+    if st.button("🚀 Process Document", type="primary"):
+        backend_url = (
+            os.environ.get("API_BASE_URL", "http://localhost:8000") + "/upload"
+        )
+
+        file_bytes = uploaded_file.getvalue()
+
+        # Upload directly to backend
+        files = {"file": (uploaded_file.name, file_bytes, uploaded_file.type)}
+        response = requests.post(backend_url, files=files)
+
+        if response.status_code == 200:
+
+            st.success(
+                f"✅ File {uploaded_file.name} successfully uploaded to the backend."
+            )
+            try:
+                result = response.json()
+
+                # Display extracted entities
+                if isinstance(result, dict) and "entities" in result:
+                    st.subheader("📊 Extracted Information")
+
+                    entities = result["entities"]
+
+                    # Display Names (Parties)
+                    if entities.get("names"):
+                        st.subheader("📋 Names (Parties)")
+                        names_df_data = []
+                        for name in entities["names"]:
+                            names_df_data.append(
+                                {"Name": name["text"], "Type": name["type"]}
+                            )
+                        st.dataframe(names_df_data, use_container_width=True)
+                    else:
+                        st.info("No parties/names found in document")
+
+                    # Display Dates
+                    if entities.get("dates"):
+                        st.subheader("📅 Dates")
+                        dates_list = [date["text"] for date in entities["dates"]]
+                        st.write(", ".join(dates_list))
+                    else:
+                        st.info("No dates found in document")
+
+                    # Display Locations
+                    if entities.get("locations"):
+                        st.subheader("🗺️ Locations")
+                        locations_df_data = []
+                        for location in entities["locations"]:
+                            locations_df_data.append(
+                                {
+                                    "Location": location["text"],
+                                    "Type": location["type"],
+                                }
+                            )
+                        st.dataframe(locations_df_data, use_container_width=True)
+                    else:
+                        st.info("No locations found in document")
+
+                    # Display cleaned text
+                    with st.expander("📄 View Cleaned Text"):
+                        st.text_area(
+                            "Cleaned Document Text:",
+                            value=result.get("cleaned_text", ""),
+                            height=500,
+                            disabled=True,
+                        )
+                else:
+                    st.write(result)
+            except ValueError:
+                st.write("Backend returned non-JSON response:", response.text)
+        else:
+            st.error(f"❌ Failed to upload file. Status code: {response.status_code}")
+            st.write("Response body:", response.text)
+
+else:
+    st.info("Please upload a file to proceed.")

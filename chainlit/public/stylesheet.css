@@ -1,0 +1,109 @@
+/* ── Scrollbar Styles (Chrome/WebKit) ── */
+
+/* Dark mode scrollbar */
+html[data-theme="dark"] ::-webkit-scrollbar,
+html[data-theme="dark"] *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+html[data-theme="dark"] ::-webkit-scrollbar-track,
+html[data-theme="dark"] *::-webkit-scrollbar-track {
+    background: hsl(232, 42%, 6%) !important;
+    border-radius: 4px;
+}
+html[data-theme="dark"] ::-webkit-scrollbar-thumb,
+html[data-theme="dark"] *::-webkit-scrollbar-thumb {
+    background: hsl(226, 50%, 24%) !important;
+    border-radius: 4px;
+    border: 1px solid hsl(232, 42%, 6%) !important;
+}
+html[data-theme="dark"] ::-webkit-scrollbar-thumb:hover,
+html[data-theme="dark"] *::-webkit-scrollbar-thumb:hover {
+    background: hsl(226, 50%, 34%) !important;
+}
+
+/* Light mode scrollbar */
+html[data-theme="light"] ::-webkit-scrollbar,
+html[data-theme="light"] *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+html[data-theme="light"] ::-webkit-scrollbar-track,
+html[data-theme="light"] *::-webkit-scrollbar-track {
+    background: hsl(220, 14%, 93%) !important;
+    border-radius: 4px;
+}
+html[data-theme="light"] ::-webkit-scrollbar-thumb,
+html[data-theme="light"] *::-webkit-scrollbar-thumb {
+    background: hsl(218, 60%, 26%) !important;
+    border-radius: 4px;
+    border: 1px solid hsl(220, 14%, 93%) !important;
+}
+html[data-theme="light"] ::-webkit-scrollbar-thumb:hover,
+html[data-theme="light"] *::-webkit-scrollbar-thumb:hover {
+    background: hsl(218, 60%, 36%) !important;
+}
+
+/* Also fix scrollbar-corner (bottom-right where horizontal & vertical meet) */
+html[data-theme="dark"] ::-webkit-scrollbar-corner {
+    background: hsl(232, 42%, 6%) !important;
+}
+html[data-theme="light"] ::-webkit-scrollbar-corner {
+    background: hsl(220, 14%, 93%) !important;
+}
+
+button#readme-button {
+    display: none !important;
+}
+
+/* Logo Area */
+.logo-text {
+  font-family: 'Rajdhani', sans-serif !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.12em !important;
+  color: #FFD700 !important;
+}
+
+/* Logo Image Size */
+/* Override Tailwind's w-[200px] utility class */
+img[alt="logo"] {
+  width: 350px !important;
+  max-width: 350px !important;
+  min-width: 350px !important;
+  height: auto !important;
+}
+
+/* Title Header Logo (top-left corner, after first message) */
+.title-header-logo {
+  width: auto !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  height: 36px !important;
+}
+
+
+/* LIGHT THEME OVERIDES */
+
+#header a img.h-6.w-6 {
+  filter: none;
+}
+
+/* Dark mode: transform the neutral gray (#667085) icon to white */
+html[data-theme="dark"] img.h-6.w-6{
+  filter: brightness(0) saturate(100%) invert(100%) !important;
+}
+html[data-theme="light"] img.h-6.w-6{
+  filter: brightness(1.7) saturate(100%) invert(100%) !important;
+}
+
+/* Starter Buttons (Light) */
+html[data-theme="light"] .starter-button {
+  background: #FFFFFF !important;
+  border: 1.5px solid rgba(212, 220, 232, 0.8) !important;
+  border-radius: 14px !important;
+  color: #0A1628 !important;
+  font-family: 'Rajdhani', 'Inter', sans-serif !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.04em !important;
+  transition: border-color 0.2s, transform 0.2s !important;
+}

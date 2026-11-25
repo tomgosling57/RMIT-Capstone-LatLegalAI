@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}LatLegal AI — Legal Document Analysis{% endblock %}
+
+{% block extra_head %}
+{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="hero-eyebrow">AI-Powered Legal Tech</div>
+  <h1>Your <span>Legal Documents</span><br>Analysed Instantly</h1>
+  <p>Upload your legal documents and get AI-generated summaries, entity extraction, and plain-language explanations in seconds.</p>
+  <div class="hero-actions">
+    <a href="{{ chat_url }}" class="btn-primary">Get Started Free</a>
+    <a href="/pricing" class="btn-dark">View Pricing</a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="features-section">
+  <p class="features-label">What we offer</p>
+  <div class="features">
+    <div class="feature-card">
+      <span class="icon">📄</span>
+      <h3>Document Summarisation</h3>
+      <p>Get concise, accurate summaries of complex legal documents in seconds using advanced AI models.</p>
+    </div>
+    <div class="feature-card">
+      <span class="icon">🔍</span>
+      <h3>Entity Extraction</h3>
+      <p>Automatically identify parties, dates, obligations, and key clauses from any legal document.</p>
+    </div>
+    <div class="feature-card">
+      <span class="icon">⚡</span>
+      <h3>Instant Analysis</h3>
+      <p>Stream results in real-time as our AI processes your documents — no waiting for batch jobs.</p>
+    </div>
+    <div class="feature-card">
+      <span class="icon">🔒</span>
+      <h3>Secure & Private</h3>
+      <p>Your documents are processed securely and never stored beyond your session without consent.</p>
+    </div>
+  </div>
+</section>
+{% endblock %}

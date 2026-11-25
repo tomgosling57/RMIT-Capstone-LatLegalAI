@@ -1,0 +1,120 @@
+# Ignore Node Modules for now?
+node_modules
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[codz]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+ mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+*.DS_Store
+
+# Environments
+.agents/jira-config.json
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials.json
+.envrc
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# PyCharm
+#  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
+#  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
+#  and can be added to the global gitignore or merged into this file.  For a more nuclear
+#  option (not recommended) you can uncomment the following to ignore the entire idea folder.
+#.idea/
+
+# Abstra
+# Abstra is an AI-powered process automation framework.
+# Ignore directories containing user credentials, local state, and settings.
+# Learn more at https://abstra.io/docs
+.abstra/
+
+# Visual Studio Code
+#  Visual Studio Code specific template is maintained in a separate VisualStudioCode.gitignore 
+#  that can be found at https://github.com/github/gitignore/blob/main/Global/VisualStudioCode.gitignore
+#  and can be added to the global gitignore or merged into this file. However, if you prefer, 
+#  you could uncomment the following to ignore the entire vscode folder
+.vscode/
+
+# Cursor
+#  Cursor is an AI-powered code editor. `.cursorignore` specifies files/directories to
+#  exclude from AI features like autocomplete and code analysis. Recommended for sensitive data
+#  refer to https://docs.cursor.com/context/ignore-files
+.cursorignore
+.cursorindexingignore
+ 
+# Roo
+.roo/
+.cline/
+*cline*
+memory-bank/
+plans/
+
+# Marimo
+marimo/_static/
+marimo/_lsp/
+__marimo__/
+
+#Streamlit
+.streamlit/secrets.toml
+
+# Logs
+backend/src/logs/
+*.log
+
+tests/frontend/Docker.dmg
+
+# Chainlit runtime files
+.chainlit/
+chainlit/.chainlit/translations
+chainlit/=3.7
+
+# Generated test output (file transformer output files)
+output/
+
+.vscode/
+chainlit/src/data/chainlit.db
+data/chainlit.db
+
+# Jira scripts output (contains issue keys from your instance)
+scripts/jira/*.result.json
+
+# Local publish-verification patterns and notes
+.private/
+
+# Local backups of the pre-publish git history
+.git-backup-*.tar.gz

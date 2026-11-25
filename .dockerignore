@@ -1,0 +1,40 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# --- Version Control ---
+.git/
+.gitignore
+.gitattributes
+
+# --- IDE & Editors ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- Testing ---
+.pytest_cache/
+tests/**/output/
+
+# --- Node / Frontend ---
+node_modules/
+
+# --- Docker ---
+.dockerignore
+
+# --- Environment ---
+.env
+.env.local
+.env.*.local
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+
+# --- Chainlit runtime ---
+.chainlit/

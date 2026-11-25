@@ -1,0 +1,27 @@
+# LatMatrix Prototype – Python dependencies
+# Install with:  pip install -r requirements.txt
+
+# --- Core ---
+python-dotenv>=1.0
+
+# --- Document processing ---
+pdfplumber>=0.10
+python-docx>=1.1
+
+# --- NLP ---
+spacy>=3.7
+# After install, download the model:
+#   python -m spacy download en_core_web_sm
+
+# --- Web framework ---
+fastapi>=0.110
+uvicorn[standard]>=0.29
+python-multipart>=0.0.9    # required for FastAPI file uploads
+
+# --- Translation (optional but recommended) ---
+deep-translator>=1.11
+
+# --- LLM backends (install only what you need) ---
+# openai>=1.30          # for OpenAI/GPT backend
+anthropic>=0.28       # for Anthropic/Claude backend
+# requests is stdlib – used for Ollama backend
